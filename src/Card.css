@@ -1,0 +1,12 @@
+.Card{
+    width: 500px;
+    height: 300px;
+    background-color: var(--color-accent);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin: 20px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+}

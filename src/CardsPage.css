@@ -1,11 +1,24 @@
 .CardsPage{
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: 2rem;
     color: var(--color-font);
+}
+
+.CardsPage-greeting {
+
+}
+
+.CardsPage-cards {
+    font-size: 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .CardsPage-back-button {

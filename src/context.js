@@ -3,12 +3,15 @@ import React, { useState } from 'react'
 const Context = React.createContext()
 
 const ContextProvider = props => {
-    const [name, setName] = useState('Zdravko')
+    const [name, setName] = useState('Zdravko') // User name
+    const [cards, setCards] = useState([]) // Fetched cards
 
     return (
         <Context.Provider value={{
             name,
-            setName
+            setName,
+            cards,
+            setCards
         }}>
             {props.children}
         </Context.Provider>
