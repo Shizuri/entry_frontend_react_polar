@@ -8,7 +8,7 @@ import cardsJson from './cards.json'
 
 const CardsPage = props => {
     const allCardTypes = [
-        "ALL TYPES",
+        // "ALL TYPES",
         "Artifact",
         "Autobot",
         "Card",
@@ -20,7 +20,6 @@ const CardsPage = props => {
         "Enchantment",
         "Goblin",
         "Hero",
-        "instant",
         "Instant",
         "Jaguar",
         "Knights",
@@ -38,6 +37,8 @@ const CardsPage = props => {
         "You’ll"
     ]
 
+    const allCardColors = ['White', 'Blue', 'Black', 'Red', 'Green']
+
     // The global state of name, no need to import setName, it will not be used here
     const { name, cards, setCards } = useContext(Context)
 
@@ -45,25 +46,29 @@ const CardsPage = props => {
     const [filteredCards, setFilteredCards] = useState([]) // Filtered cards
 
     const [searchTerm, setSearchTerm] = useState('') // Search term to filter cards by
-    const [cardType, setCardType] = useState(['ALL TYPES']) // Card type value
+    const [cardType, setCardType] = useState([]) // Card type value
+    const [cardColor, setCardColor] = useState([]) // Card color value
 
     const handleSearchTerm = event => {
         setSearchTerm(event.target.value)
     }
 
-
-    // PROBLEMS HERE, FIX IT!!!
     const handleTypeChange = event => {
-        const val = event.target.value
-        console.log('val: ', val)
-        console.log('event.target.value: ', event.target.value)
-        setCardType(prevVal => {
-            if (prevVal.includes(val)) {
-                return prevVal.filter(item => item !== val)
-            } else {
-                return [...prevVal, val]
-            }
-        })
+        const selected = []
+        let selectedOption = (event.target.selectedOptions)
+        for (let i = 0; i < selectedOption.length; i++) {
+            selected.push(selectedOption.item(i).value)
+        }
+        setCardType(selected)
+    }
+
+    const handleColorChange = event => {
+        const selected = []
+        let selectedOption = (event.target.selectedOptions)
+        for (let i = 0; i < selectedOption.length; i++) {
+            selected.push(selectedOption.item(i).value)
+        }
+        setCardColor(selected)
     }
 
     // Load cards
@@ -98,7 +103,7 @@ const CardsPage = props => {
     useEffect(() => {
         let result = cards
 
-        // First filter by search term
+        // Filter by search term
         const nameTextFilterResult = cards.filter(card => {
             // Sometimes there is no entry for text, check for it
             if (card.name && card.text) {
@@ -111,80 +116,66 @@ const CardsPage = props => {
                 return (card.name.toLowerCase().includes(searchTerm.toLowerCase()))
             }
         })
+        result = nameTextFilterResult
 
         // Filter by card type
-        // If all types are included, just return the list
-        if (cardType.includes('ALL TYPES')) {
-            result = nameTextFilterResult
-        } else {
-            const cardTypeFilterResult = nameTextFilterResult.filter(card => {
-                if (card.types) {
-                    for (let i = 0; i < card.types.length; i++) {
-                        for (let j = 0; j < cardType.length; j++) {
-                            if (card.types[i].includes(cardType[j])) {
-                                return true
-                            }
+        const cardTypeFilterResult = result.filter(card => {
+            if (card.types) {
+                for (let i = 0; i < card.types.length; i++) {
+                    for (let j = 0; j < cardType.length; j++) {
+                        if (card.types[i].toLowerCase().includes(cardType[j].toLowerCase())) {
+                            return true
                         }
                     }
                 }
-                return false
-            })
+            }
+            return false
+        })
+        console.log('cardTypeFilterResult: ', cardTypeFilterResult)
+        if (cardType.length > 0) {
             result = cardTypeFilterResult
         }
 
-
-
-        // console.log('cardTypeFilterResult: ', cardTypeFilterResult)
-        // // Set the filter only if any items were found
-        // if (cardTypeFilterResult.length > 0) {
-        //     result = cardTypeFilterResult
-        // }
-        setFilteredCards(result)
-
-        if(cardType.length <= 0){
-            setCardType('ALL TYPES')
+        // Filter by card color
+        const cardColorFilterResult = result.filter(card => {
+            if (card.colors) {
+                for (let i = 0; i < card.colors.length; i++) {
+                    for (let j = 0; j < cardColor.length; j++) {
+                        if (card.colors[i].toLowerCase().includes(cardColor[j].toLowerCase())) {
+                            return true
+                        }
+                    }
+                }
+            }
+            return false
+        })
+        if (cardColor.length > 0) {
+            result = cardColorFilterResult
         }
-    }, [cards, searchTerm, cardType])
 
-    // BACKUP
-    // useEffect(() => {
-    //     setFilteredCards(prevCards => {
-    //         const result = cards.filter(card => {
-    //             // Sometimes there is no entry for text, check for it
-    //             if (card.name && card.text) {
-    //                 return (
-    //                     card.name.toLowerCase().includes(searchTerm.toLowerCase())
-    //                     || card.text.toLowerCase().includes(searchTerm.toLowerCase())
-    //                 )
-    //             } else {
-    //                 return (card.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    //             }
-    //         }
-    //         )
-    //         return (
-    //             result
-    //         )
-    //     })
-    // }, [cards, searchTerm])
-
-    // console.log('CARDS: ', cards)
+        setFilteredCards(result)
+    }, [cards, searchTerm, cardType, cardColor])
 
     return (
         <div className='CardsPage'>
-            <h1 className='CardsPage-greeting'>Hello, {name}</h1>
+            <h3 className='CardsPage-greeting'>Hello, {name}</h3>
 
-            {/* Filter search */}
-            <input type='text' value={searchTerm} onChange={handleSearchTerm} />
+            <div className='CardsPage-controls'>
+                {/* Filter search */}
+                <input type='text' value={searchTerm} onChange={handleSearchTerm} />
 
-            <strong>Select Card Type:</strong>
-            <select className='CardsPage-card-type-selector' id='CardsPage-card-type-selector' multiple={true} value={cardType} onChange={handleTypeChange}>
-                {allCardTypes.map(item => <option key={item} value={item}>{item}</option>)}
-            </select>
+                <select className='CardsPage-card-type-selector' id='CardsPage-card-type-selector' multiple={true} value={cardType} onChange={handleTypeChange}>
+                    {allCardTypes.map(item => <option key={item} value={item}>{item}</option>)}
+                </select>
+                <select className='CardsPage-card-color-selector' id='CardsPage-card-color-selector' multiple={true} value={cardColor} onChange={handleColorChange}>
+                    {allCardColors.map(item => <option key={item} value={item}>{item}</option>)}
+                </select>
 
-            <p>{cardType}</p>
+                <p>Card Type: {cardType}</p>
+                <p>Card Color: {cardColor}</p>
+            </div>
 
             <div className='CardsPage-cards'>
-                {/* {loaded ? <p>DONE!</p> : <p>Loading...</p>} */}
                 {loaded ? filteredCards.map(card =>
                     <Card
                         key={card.id}
