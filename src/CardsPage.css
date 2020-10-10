@@ -1,5 +1,15 @@
-.CardsPage{
+/* Just a reminder. All css files can access these from index.css */
+
+/* :root {
+    --color-background: #e5eaf5;
+    --color-font: #494d5f;
+    --color-warning: #d83694;
+    --color-accent: #d0bdf4;
+} */
+
+.CardsPage {
     min-height: 100vh;
+    min-width: 98vw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -8,9 +18,7 @@
     color: var(--color-font);
 }
 
-.CardsPage-greeting {
-
-}
+.CardsPage-greeting {}
 
 .CardsPage-cards {
     font-size: 1rem;
@@ -19,6 +27,23 @@
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
+}
+
+.CardsPage-controls {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.CardsPage-controls-left-panel {
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .CardsPage-back-button {
@@ -33,7 +58,7 @@
     border-radius: 5px;
     padding: 0 10px;
     cursor: pointer;
-	transition: background-color 0.5s ease-in, color 0.5s ease-in;
+    transition: background-color 0.5s ease-in, color 0.5s ease-in;
     margin-left: 5px;
     text-align: center;
 }
@@ -43,8 +68,77 @@
     color: var(--color-accent);
 }
 
+.CardsPage-controls-right-panel {
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .CardsPage-card-type-selector, .CardsPage-card-color-selector {
-    font-size: 1rem;
-    height: 300px;
-    width: 150px;
+    font-size: 1.5rem;
+    color: var(--color-font);
+    background-color: var(--color-background);
+    border-radius: 5px;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    /* This allows horizontal placement */
+    white-space: normal;
+    outline: none;
+}
+
+.CardsPage-card-color-selector {
+    height: 33px;
+    width: 500px;
+    overflow: hidden;
+    border: none;
+    /* border: 1px solid black; */
+}
+
+.CardsPage-card-type-selector {
+    /* height: 33px;
+    width: 550px;
+    overflow: hidden;
+    border: none; */
+    border: 1px solid black;
+}
+
+.CardsPage-card-type-option, .CardsPage-card-color-option {
+    height: auto;
+    width: 130px;
+    border: none;
+    background-color: var(--color-background);
+    display: inline-block;
+    border-radius: 5px;
+}
+
+.CardsPage-card-color-option {
+    width: 90px;
+}
+
+.CardsPage-card-type-option {
+    width: 130px;
+}
+
+.CardsPage-card-type-option:hover, .CardsPage-card-color-option:hover {
+    background-color: var(--color-accent);
+}
+
+/* Style only for Mozilla Firefox */
+
+@-moz-document url-prefix() {
+    .CardsPage-card-type-selector, .CardsPage-card-color-selector {
+        /* font-size: 1.5rem; */
+        height: 200px;
+        width: 300px;
+        white-space: wrap;
+    }
+    .CardsPage-card-type-option, .CardsPage-card-color-option {
+        height: auto;
+        width: auto;
+        border: none;
+        display: block;
+    }
 }

@@ -1,16 +1,10 @@
-:root {
+/* Just a reminder. All css files can access these from index.css */
+/* :root {
     --color-background: #e5eaf5;
     --color-font: #494d5f;
     --color-warning: #d83694;
     --color-accent: #d0bdf4;
-}
-
-body {
-    background-color: var(--color-background);
-    box-sizing: border-box;
-    font-family: 'Dosis', sans-serif;
-    font-weight: 400;
-}
+} */
 
 .HomePage {
     min-height: 100vh;

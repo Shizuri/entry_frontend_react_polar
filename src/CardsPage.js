@@ -24,7 +24,7 @@ const CardsPage = props => {
     const [searchTerm, setSearchTerm] = useState('') // Search term to filter cards by
     const [cardTypeSelectedValues, setCardTypeSelectedValues] = useState([]) // Card type value
     const [cardColorSelectedValues, setCardColorSelectedValues] = useState([]) // Card color value
-    const [cardOrder, setCardOrder] = useState('')
+    const [cardOrder, setCardOrder] = useState('Sort')
 
     const handleSearchTerm = event => {
         setSearchTerm(event.target.value)
@@ -48,19 +48,20 @@ const CardsPage = props => {
         setCardColorSelectedValues(selected)
     }
 
-    const sortByAscending = () => {
-        cards.sort((a, b) => a.name.localeCompare(b.name))
-        // The state exists and is updated only for the purpose of component reloading    
-        setCardOrder('Ascending')
+    const handleSortingOrder = event => {
+        const { value } = event.target
+        switch (value) {
+            case 'Ascending':
+                cards.sort((a, b) => a.name.localeCompare(b.name))
+                break
+            case 'Descending':
+                cards.sort((a, b) => b.name.localeCompare(a.name))
+                break
+            default:
+                break
+        }
+        setCardOrder(value)
     }
-
-    const sortByDescending = () => {
-        cards.sort((a, b) => b.name.localeCompare(a.name))
-        // The state exists and is updated only for the purpose of component reloading   
-        setCardOrder('Descending')
-    }
-
-    console.log('Cards: ', cards)
 
     // Load cards
     // useEffect(() => {
@@ -75,7 +76,6 @@ const CardsPage = props => {
     //                 setCards(data.cards) // Set global state cards
     //                 setFilteredCards(data.cards) // Set filtered cards that will be displayed
     //                 setLoaded(true) // Cards are loaded
-    //                 console.log(data)
     //             })
     //             // Catch errors
     //             .catch(error => console.log('Request Failed with error: ', error))
@@ -156,25 +156,36 @@ const CardsPage = props => {
 
     return (
         <div className='CardsPage'>
-            <h3 className='CardsPage-greeting'>Hello, {name}</h3>
+            <h1 className='CardsPage-greeting'>Hello, {name}</h1>
 
             <div className='CardsPage-controls'>
-                {/* Filter search */}
-                <input type='text' value={searchTerm} onChange={handleSearchTerm} />
+                <div className='CardsPage-controls-left-panel'>
+                    <label htmlFor='CardsPage-filter'>Filter cards by name or text</label>
+                    <input type='text' name='CardsPage-filter' id='CardsPage-filter' value={searchTerm} onChange={handleSearchTerm} />
 
-                <select className='CardsPage-card-type-selector' id='CardsPage-card-type-selector' multiple={true} value={cardTypeSelectedValues} onChange={handleTypeChange}>
-                    {ALL_CARD_TYPES.map(item => <option key={item} value={item}>{item}</option>)}
-                </select>
-                <select className='CardsPage-card-color-selector' id='CardsPage-card-color-selector' multiple={true} value={cardColorSelectedValues} onChange={handleColorChange}>
-                    {ALL_CARD_COLORS.map(item => <option key={item} value={item}>{item}</option>)}
-                </select>
+                    <label htmlFor='CardsPage-sorting-selector'>Sort card alphabetically</label>
+                    <select className='CardsPage-sorting-selector' name='CardsPage-sorting-selector' id='CardsPage-sorting-selector' value={cardOrder} onChange={handleSortingOrder}>
+                        <option value='Sort' disabled defaultValue>Sort</option>
+                        <option value='Ascending'>Ascending</option>
+                        <option value='Descending'>Descending</option>
+                    </select>
 
-                <button onClick={sortByAscending}>Sort by name Ascending</button>
-                <button onClick={sortByDescending}>Sort by name Descending</button>
+                    <div>Number of shown cards: {filteredCards.length}</div>
+                </div>
 
-                <p>Card Type: {cardTypeSelectedValues}</p>
-                <p>Card Color: {cardColorSelectedValues}</p>
-                <p>Number of shown cards: {filteredCards.length}</p>
+                <div className='CardsPage-controls-right-panel'>
+                    <label htmlFor='CardsPage-card-color-selector'>Filter cards by <strong>color</strong></label>
+                    <select className='CardsPage-card-color-selector' id='CardsPage-card-color-selector' multiple={true} value={cardColorSelectedValues} onChange={handleColorChange}>
+                        {ALL_CARD_COLORS.map(item => <option className='CardsPage-card-color-option' key={item} value={item}>{item}</option>)}
+                    </select>
+
+                    <label htmlFor='CardsPage-card-type-selector'>Filter cards by <strong>type</strong></label>
+                    <select className='CardsPage-card-type-selector' id='CardsPage-card-type-selector' multiple={true} value={cardTypeSelectedValues} onChange={handleTypeChange}>
+                        {ALL_CARD_TYPES.map(item => <option className='CardsPage-card-type-option' key={item} value={item}>{item}</option>)}
+                    </select>
+                    <div><em>Please hold the CTRL button when clicking to deselect options or to select multiple options</em></div>
+
+                </div>
             </div>
 
             <div className='CardsPage-cards'>

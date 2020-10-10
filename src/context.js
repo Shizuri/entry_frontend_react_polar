@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 const Context = React.createContext()
 
 const ContextProvider = props => {
-    const [name, setName] = useState('Zdravko') // User name
+    const [name, setName] = useState('') // User name
     const [cards, setCards] = useState([]) // Fetched cards
 
     return (
