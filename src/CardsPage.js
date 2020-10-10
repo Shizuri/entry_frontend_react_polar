@@ -195,7 +195,8 @@ const CardsPage = props => {
                         key={card.id}
                         name={card.name}
                         text={card.text}
-                        type={card.type}
+                        types={card.types}
+                        setName={card.setName}
                         colors={card.colors}
                         imageUrl={card.imageUrl}
                     />)
