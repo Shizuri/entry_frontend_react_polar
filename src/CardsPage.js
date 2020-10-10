@@ -4,41 +4,17 @@ import { Context } from './context'
 import { Link } from 'react-router-dom'
 import Card from './Card'
 
-import cardsJson from './cards.json'
+import cardsJson from './cards.json' // JSON extracted from the MtG API for faster use
+
+// Constant values that are frozen so that they can't be mutated in any way
+const ALL_CARD_TYPES = ['Artifact', 'Autobot', 'Card', 'Character', 'Conspiracy', 'Creature', 'Dragon', 'Elemental',
+    'Enchantment', 'Goblin', 'Hero', 'Instant', 'Jaguar', 'Knights', 'Land', 'Phenomenon', 'Plane', 'Planeswalker',
+    'Scheme', 'Sorcery', 'Specter', 'Summon', 'Tribal', 'Vanguard', 'Wolf', 'You’ll']
+Object.freeze(ALL_CARD_TYPES)
+const ALL_CARD_COLORS = ['White', 'Blue', 'Black', 'Red', 'Green']
+Object.freeze(ALL_CARD_COLORS)
 
 const CardsPage = props => {
-    const allCardTypes = [
-        // "ALL TYPES",
-        "Artifact",
-        "Autobot",
-        "Card",
-        "Character",
-        "Conspiracy",
-        "Creature",
-        "Dragon",
-        "Elemental",
-        "Enchantment",
-        "Goblin",
-        "Hero",
-        "Instant",
-        "Jaguar",
-        "Knights",
-        "Land",
-        "Phenomenon",
-        "Plane",
-        "Planeswalker",
-        "Scheme",
-        "Sorcery",
-        "Specter",
-        "Summon",
-        "Tribal",
-        "Vanguard",
-        "Wolf",
-        "You’ll"
-    ]
-
-    const allCardColors = ['White', 'Blue', 'Black', 'Red', 'Green']
-
     // The global state of name, no need to import setName, it will not be used here
     const { name, cards, setCards } = useContext(Context)
 
@@ -46,8 +22,9 @@ const CardsPage = props => {
     const [filteredCards, setFilteredCards] = useState([]) // Filtered cards
 
     const [searchTerm, setSearchTerm] = useState('') // Search term to filter cards by
-    const [cardType, setCardType] = useState([]) // Card type value
-    const [cardColor, setCardColor] = useState([]) // Card color value
+    const [cardTypeSelectedValues, setCardTypeSelectedValues] = useState([]) // Card type value
+    const [cardColorSelectedValues, setCardColorSelectedValues] = useState([]) // Card color value
+    const [cardOrder, setCardOrder] = useState('')
 
     const handleSearchTerm = event => {
         setSearchTerm(event.target.value)
@@ -59,7 +36,7 @@ const CardsPage = props => {
         for (let i = 0; i < selectedOption.length; i++) {
             selected.push(selectedOption.item(i).value)
         }
-        setCardType(selected)
+        setCardTypeSelectedValues(selected)
     }
 
     const handleColorChange = event => {
@@ -68,8 +45,22 @@ const CardsPage = props => {
         for (let i = 0; i < selectedOption.length; i++) {
             selected.push(selectedOption.item(i).value)
         }
-        setCardColor(selected)
+        setCardColorSelectedValues(selected)
     }
+
+    const sortByAscending = () => {
+        cards.sort((a, b) => a.name.localeCompare(b.name))
+        // The state exists and is updated only for the purpose of component reloading    
+        setCardOrder('Ascending')
+    }
+
+    const sortByDescending = () => {
+        cards.sort((a, b) => b.name.localeCompare(a.name))
+        // The state exists and is updated only for the purpose of component reloading   
+        setCardOrder('Descending')
+    }
+
+    console.log('Cards: ', cards)
 
     // Load cards
     // useEffect(() => {
@@ -101,7 +92,7 @@ const CardsPage = props => {
 
     // Update cards on filter change
     useEffect(() => {
-        let result = cards
+        let result = cards // Start with all the cards
 
         // Filter by search term
         const nameTextFilterResult = cards.filter(card => {
@@ -116,14 +107,18 @@ const CardsPage = props => {
                 return (card.name.toLowerCase().includes(searchTerm.toLowerCase()))
             }
         })
+        // Update the result to be the new filtered by term results
         result = nameTextFilterResult
 
         // Filter by card type
-        const cardTypeFilterResult = result.filter(card => {
+        const cardTypeSelectedValuesFilterResult = result.filter(card => {
+            // Check if the card has a type provided by the API
             if (card.types) {
                 for (let i = 0; i < card.types.length; i++) {
-                    for (let j = 0; j < cardType.length; j++) {
-                        if (card.types[i].toLowerCase().includes(cardType[j].toLowerCase())) {
+                    for (let j = 0; j < cardTypeSelectedValues.length; j++) {
+                        // If any member of the card types array is found in the array of selected types, filter it in
+                        // This will make sure that if the card has more than one type it will still be shown
+                        if (card.types[i].toLowerCase().includes(cardTypeSelectedValues[j].toLowerCase())) {
                             return true
                         }
                     }
@@ -131,17 +126,20 @@ const CardsPage = props => {
             }
             return false
         })
-        console.log('cardTypeFilterResult: ', cardTypeFilterResult)
-        if (cardType.length > 0) {
-            result = cardTypeFilterResult
+        // If no values of the card type MultiSelect menu were selected, show all previously filtered results
+        if (cardTypeSelectedValues.length > 0) {
+            result = cardTypeSelectedValuesFilterResult
         }
 
         // Filter by card color
-        const cardColorFilterResult = result.filter(card => {
+        const cardColorSelectedValuesFilterResult = result.filter(card => {
+            // Check if the card has a color provided by the API
             if (card.colors) {
                 for (let i = 0; i < card.colors.length; i++) {
-                    for (let j = 0; j < cardColor.length; j++) {
-                        if (card.colors[i].toLowerCase().includes(cardColor[j].toLowerCase())) {
+                    for (let j = 0; j < cardColorSelectedValues.length; j++) {
+                        if (card.colors[i].toLowerCase().includes(cardColorSelectedValues[j].toLowerCase())) {
+                            // If any member of the card types array is found in the array of selected types, filter it in
+                            // This will make sure that if the card has more than one type it will still be shown
                             return true
                         }
                     }
@@ -149,12 +147,12 @@ const CardsPage = props => {
             }
             return false
         })
-        if (cardColor.length > 0) {
-            result = cardColorFilterResult
+        if (cardColorSelectedValues.length > 0) {
+            result = cardColorSelectedValuesFilterResult
         }
 
         setFilteredCards(result)
-    }, [cards, searchTerm, cardType, cardColor])
+    }, [cards, searchTerm, cardTypeSelectedValues, cardColorSelectedValues, cardOrder])
 
     return (
         <div className='CardsPage'>
@@ -164,15 +162,19 @@ const CardsPage = props => {
                 {/* Filter search */}
                 <input type='text' value={searchTerm} onChange={handleSearchTerm} />
 
-                <select className='CardsPage-card-type-selector' id='CardsPage-card-type-selector' multiple={true} value={cardType} onChange={handleTypeChange}>
-                    {allCardTypes.map(item => <option key={item} value={item}>{item}</option>)}
+                <select className='CardsPage-card-type-selector' id='CardsPage-card-type-selector' multiple={true} value={cardTypeSelectedValues} onChange={handleTypeChange}>
+                    {ALL_CARD_TYPES.map(item => <option key={item} value={item}>{item}</option>)}
                 </select>
-                <select className='CardsPage-card-color-selector' id='CardsPage-card-color-selector' multiple={true} value={cardColor} onChange={handleColorChange}>
-                    {allCardColors.map(item => <option key={item} value={item}>{item}</option>)}
+                <select className='CardsPage-card-color-selector' id='CardsPage-card-color-selector' multiple={true} value={cardColorSelectedValues} onChange={handleColorChange}>
+                    {ALL_CARD_COLORS.map(item => <option key={item} value={item}>{item}</option>)}
                 </select>
 
-                <p>Card Type: {cardType}</p>
-                <p>Card Color: {cardColor}</p>
+                <button onClick={sortByAscending}>Sort by name Ascending</button>
+                <button onClick={sortByDescending}>Sort by name Descending</button>
+
+                <p>Card Type: {cardTypeSelectedValues}</p>
+                <p>Card Color: {cardColorSelectedValues}</p>
+                <p>Number of shown cards: {filteredCards.length}</p>
             </div>
 
             <div className='CardsPage-cards'>
