@@ -160,20 +160,6 @@ const CardsPage = props => {
 
             <div className='CardsPage-controls'>
                 <div className='CardsPage-controls-left-panel'>
-                    <label htmlFor='CardsPage-filter'>Filter cards by name or text</label>
-                    <input type='text' name='CardsPage-filter' id='CardsPage-filter' value={searchTerm} onChange={handleSearchTerm} />
-
-                    <label htmlFor='CardsPage-sorting-selector'>Sort card alphabetically</label>
-                    <select className='CardsPage-sorting-selector' name='CardsPage-sorting-selector' id='CardsPage-sorting-selector' value={cardOrder} onChange={handleSortingOrder}>
-                        <option value='Sort' disabled defaultValue>Sort</option>
-                        <option value='Ascending'>Ascending</option>
-                        <option value='Descending'>Descending</option>
-                    </select>
-
-                    <div>Number of shown cards: {filteredCards.length}</div>
-                </div>
-
-                <div className='CardsPage-controls-right-panel'>
                     <label htmlFor='CardsPage-card-color-selector'>Filter cards by <strong>color</strong></label>
                     <select className='CardsPage-card-color-selector' id='CardsPage-card-color-selector' multiple={true} value={cardColorSelectedValues} onChange={handleColorChange}>
                         {ALL_CARD_COLORS.map(item => <option className='CardsPage-card-color-option' key={item} value={item}>{item}</option>)}
@@ -183,10 +169,25 @@ const CardsPage = props => {
                     <select className='CardsPage-card-type-selector' id='CardsPage-card-type-selector' multiple={true} value={cardTypeSelectedValues} onChange={handleTypeChange}>
                         {ALL_CARD_TYPES.map(item => <option className='CardsPage-card-type-option' key={item} value={item}>{item}</option>)}
                     </select>
-                    <div><em>Please hold the CTRL button when clicking to deselect options or to select multiple options</em></div>
+                </div>
 
+                <div className='CardsPage-controls-right-panel'>
+                    <label htmlFor='CardsPage-filter'>Filter cards by name or text</label>
+                    <input type='text' className='CardsPage-filter' name='CardsPage-filter' id='CardsPage-filter' value={searchTerm} onChange={handleSearchTerm} />
+
+                    <label htmlFor='CardsPage-sorting-selector'>Sort card alphabetically</label>
+                    <select className='CardsPage-sorting-selector' name='CardsPage-sorting-selector' id='CardsPage-sorting-selector' value={cardOrder} onChange={handleSortingOrder}>
+                        <option className='CardsPage-sorting-option' value='Sort' disabled defaultValue>Sort</option>
+                        <option className='CardsPage-sorting-option' value='Ascending'>Ascending</option>
+                        <option className='CardsPage-sorting-option' value='Descending'>Descending</option>
+                    </select>
+
+                    <div className='CardsPage-cards-found'>Cards found: <strong>{filteredCards.length}</strong></div>
+
+                    <Link className='CardsPage-back-button' to='/'>Home</Link>
                 </div>
             </div>
+            <div className='CardPage-explanation'><em>Please hold the CTRL button when clicking to deselect or to select multiple options</em></div>
 
             <div className='CardsPage-cards'>
                 {loaded ? filteredCards.map(card =>
@@ -200,8 +201,6 @@ const CardsPage = props => {
                     />)
                     : 'Loading cards ...'}
             </div>
-
-            <Link className='CardsPage-back-button' to='/'>Home</Link>
         </div>
     )
 }
