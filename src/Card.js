@@ -4,7 +4,6 @@ import useFormatArrayOutput from './hooks/useFormatArrayOutput'
 import MtGCardBackImage from './images/MtGCardBack.jpg'
 
 const Card = props => {
-    console.log('props.imageUrl: ', props.imageUrl)
     return (
         <div className='Card'>
             <div className='Card-image-panel'>
@@ -15,7 +14,6 @@ const Card = props => {
                 {props.imageUrl ? null :
                     <div className='Card-image-not-found'>Image not found</div>
                 }
-
 
             </div>
             <div className='Card-data-panel'>

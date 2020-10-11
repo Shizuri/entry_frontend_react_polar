@@ -9,13 +9,13 @@
 .Card{
     box-sizing: border-box;
     width: 500px;
-    height: 311px;
+    height: 320px;
     color: var(--color-font);
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     justify-content: center;
-    margin: 20px;
+    margin: 30px;
     border-radius: 5px;
     font-size: 1.0rem;
 }
@@ -43,4 +43,18 @@
     left: 30px;
     font-size: 1.5rem;
     font-weight: 600;
+}
+
+@media (max-width: 550px) {
+    .Card{
+        box-sizing: border-box;
+        width: 100%;
+        height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        margin: 30px;
+        border-radius: 5px;
+        font-size: 1.0rem;
+    }
 }

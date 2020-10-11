@@ -23,6 +23,8 @@ const HomePage = props => {
 	const handleSubmit = event => {
 		// This is a Single Page Application so this prevents the browser from reloading the app
 		event.preventDefault()
+		// Set name to localStorage
+		localStorage.setItem('name', name)
 		// Redirecting to the Cards Page
 		history.push('/cards-page')
 	}
@@ -51,7 +53,7 @@ const HomePage = props => {
 
 	return (
 		<div className='HomePage'>
-			<form onSubmit={handleSubmit}>
+			<form className='HomePage-form' onSubmit={handleSubmit}>
 				<label className='HomePage-name-label' htmlFor='name'>Name:</label>
 				<input className='HomePage-name-input' type='text' id='HomePage-name-input' name='name' value={name}
 					onChange={handleChange} placeholder='Your name here' ref={userNameRef} required minLength='3' pattern='^[A-Z].*' />

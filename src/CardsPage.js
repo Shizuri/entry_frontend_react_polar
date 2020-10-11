@@ -15,8 +15,8 @@ const ALL_CARD_COLORS = ['White', 'Blue', 'Black', 'Red', 'Green']
 Object.freeze(ALL_CARD_COLORS)
 
 const CardsPage = props => {
-    // The global state of name, no need to import setName, it will not be used here
-    const { name, cards, setCards } = useContext(Context)
+    // The global state
+    const { name, setName, cards, setCards } = useContext(Context)
 
     const [loaded, setLoaded] = useState(false) // Card load state
     const [filteredCards, setFilteredCards] = useState([]) // Filtered cards
@@ -82,6 +82,14 @@ const CardsPage = props => {
     //     }
     //     getCards()
     // }, [setCards])
+
+    // If the name was reset, usually because of a page reload, read it from localStorage
+    useEffect(() =>{
+		const localName = localStorage.getItem('name')
+		if(localName !== null){
+			setName(localName)
+		}
+    },[setName])
 
     // Load cards dummy effect with local Json for faster loading
     useEffect(() => {
@@ -159,7 +167,7 @@ const CardsPage = props => {
             <h1 className='CardsPage-greeting'>Hello, {name}</h1>
 
             <div className='CardsPage-controls'>
-                <div className='CardsPage-controls-left-panel'>
+                <div className='CardsPage-controls-left-or-top-panel'>
                     <label htmlFor='CardsPage-card-color-selector'>Filter cards by <strong>color</strong></label>
                     <select className='CardsPage-card-color-selector' id='CardsPage-card-color-selector' multiple={true} value={cardColorSelectedValues} onChange={handleColorChange}>
                         {ALL_CARD_COLORS.map(item => <option className='CardsPage-card-color-option' key={item} value={item}>{item}</option>)}
@@ -171,18 +179,18 @@ const CardsPage = props => {
                     </select>
                 </div>
 
-                <div className='CardsPage-controls-right-panel'>
-                    <label htmlFor='CardsPage-filter'>Filter cards by name or text</label>
-                    <input type='text' className='CardsPage-filter' name='CardsPage-filter' id='CardsPage-filter' value={searchTerm} onChange={handleSearchTerm} />
+                <div className='CardsPage-controls-right-or-bottom-panel'>
+                    <label htmlFor='CardsPage-search-term-filter'>Filter cards by name or text</label>
+                    <input type='text' className='CardsPage-search-term-filter' name='CardsPage-search-term-filter' id='CardsPage-search-term-filter' value={searchTerm} onChange={handleSearchTerm} />
 
-                    <label htmlFor='CardsPage-sorting-selector'>Sort card alphabetically</label>
-                    <select className='CardsPage-sorting-selector' name='CardsPage-sorting-selector' id='CardsPage-sorting-selector' value={cardOrder} onChange={handleSortingOrder}>
+                    <label htmlFor='CardsPage-alphabetic-sorting-selector'>Sort card alphabetically</label>
+                    <select className='CardsPage-alphabetic-sorting-selector' name='CardsPage-alphabetic-sorting-selector' id='CardsPage-alphabetic-sorting-selector' value={cardOrder} onChange={handleSortingOrder}>
                         <option className='CardsPage-sorting-option' value='Sort' disabled defaultValue>Sort</option>
                         <option className='CardsPage-sorting-option' value='Ascending'>Ascending</option>
                         <option className='CardsPage-sorting-option' value='Descending'>Descending</option>
                     </select>
 
-                    <div className='CardsPage-cards-found'>Cards found: <strong>{filteredCards.length}</strong></div>
+                    <div className='CardsPage-number-of-cards-found'>Cards found: <strong>{filteredCards.length}</strong></div>
 
                     <Link className='CardsPage-back-button' to='/'>Home</Link>
                 </div>

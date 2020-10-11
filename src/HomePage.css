@@ -97,3 +97,15 @@
         margin-left: 5px;
     }
 }
+
+@media (max-width: 260px) {
+    .HomePage-form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .HomePage-name-input {
+        width: 80%;
+    }
+}
