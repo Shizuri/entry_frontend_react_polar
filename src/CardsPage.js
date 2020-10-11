@@ -68,22 +68,38 @@ const CardsPage = props => {
 
     // Load cards
     useEffect(() => {
+        let isMounted = true
+
         const getCards = () => {
             // GET Request.
             fetch('https://api.magicthegathering.io/v1/cards?random=true&pageSize=100&language=English/')
                 // Handle success
                 // Convert to json
-                .then(response => response.json())
+                .then(response => {
+                    if (isMounted) {
+                        return response.json()
+                    }
+                })
                 .then(data => {
-
-                    setCards(data.cards) // Set global state cards
-                    setFilteredCards(data.cards) // Set filtered cards that will be displayed
-                    setLoaded(true) // Cards are loaded
+                    if (isMounted) {
+                        setCards(data.cards) // Set global state cards
+                        setFilteredCards(data.cards) // Set filtered cards that will be displayed
+                        setLoaded(true) // Cards are loaded
+                    }
                 })
                 // Catch errors
-                .catch(error => console.log('Request Failed with error: ', error))
+                .catch(error => {
+                    if (isMounted) {
+                        console.log('Request Failed with error: ', error)
+                    }
+                })
+
         }
+
         getCards()
+        // Set isMounted to false so that the fetch request does not happen
+        // This prevents a memory leak scenario on a fast component unmount
+        return () => { isMounted = false }
     }, [setCards])
 
     // Load cards dummy effect with local JSON
